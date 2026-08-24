@@ -1,0 +1,187 @@
+{
+  "app_name": "RetailPrime POS & ERP",
+  "personality": "1 iOS-Native Clean with structural clarity for business ERP",
+  "personality_one_liner": "A premium, highly disciplined executive cockpit that uses extreme structural clarity, deep sophisticated neutrals, and generous spacing to make complex retail data feel effortless and calm.",
+  "color": {
+    "light": {
+      "surface": "#F9FAFB",
+      "onSurface": "#111827",
+      "surfaceSecondary": "#FFFFFF",
+      "onSurfaceSecondary": "#1F2937",
+      "surfaceTertiary": "#F3F4F6",
+      "onSurfaceTertiary": "#374151",
+      "surfaceInverse": "#111827",
+      "onSurfaceInverse": "#FFFFFF",
+      "brand": "#0F172A",
+      "brandPrimary": "#0F172A",
+      "onBrandPrimary": "#FFFFFF",
+      "brandSecondary": "#334155",
+      "onBrandSecondary": "#FFFFFF",
+      "brandTertiary": "#E2E8F0",
+      "onBrandTertiary": "#0F172A",
+      "success": "#059669",
+      "onSuccess": "#FFFFFF",
+      "warning": "#D97706",
+      "onWarning": "#FFFFFF",
+      "error": "#DC2626",
+      "onError": "#FFFFFF",
+      "info": "#2563EB",
+      "onInfo": "#FFFFFF",
+      "border": "#E5E7EB",
+      "borderStrong": "#D1D5DB",
+      "divider": "#F3F4F6"
+    },
+    "dark": {
+      "surface": "#111827",
+      "onSurface": "#F9FAFB",
+      "surfaceSecondary": "#1F2937",
+      "onSurfaceSecondary": "#F3F4F6",
+      "surfaceTertiary": "#374151",
+      "onSurfaceTertiary": "#E5E7EB",
+      "surfaceInverse": "#F9FAFB",
+      "onSurfaceInverse": "#111827",
+      "brand": "#FFFFFF",
+      "brandPrimary": "#FFFFFF",
+      "onBrandPrimary": "#111827",
+      "brandSecondary": "#9CA3AF",
+      "onBrandSecondary": "#111827",
+      "brandTertiary": "#374151",
+      "onBrandTertiary": "#F9FAFB",
+      "success": "#10B981",
+      "onSuccess": "#064E3B",
+      "warning": "#F59E0B",
+      "onWarning": "#78350F",
+      "error": "#EF4444",
+      "onError": "#7F1D1D",
+      "info": "#3B82F6",
+      "onInfo": "#EFF6FF",
+      "border": "#374151",
+      "borderStrong": "#4B5563",
+      "divider": "#1F2937"
+    }
+  },
+  "typography": {
+    "displayFontFamily": "Inter",
+    "textFontFamily": "Inter",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Use 8pt grid system. Maintain generous horizontal margins (lg/xl) for safe areas, and tighter vertical spacing (sm/md) within data rows to ensure information density without clutter.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 10,
+    "lg": 16,
+    "pill": 999
+  },
+  "shadow_tier": 1,
+  "navigation": "bottom_tabs with side drawer/hamburger for secondary deep links",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": false,
+    "do's": [
+      "Use solid surfaceSecondary for elevated elements.",
+      "Use subtle gradient scrims only over hero background images to ensure text readability."
+    ],
+    "dont's": [
+      "Do not use full glassmorphism, blur, or heavy transparency on UI cards.",
+      "Do not use frosted glass on the tab bar or headers; keep it matte and solid to maintain the serious ERP look."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "None",
+      "android": "None",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "haptics": {
+    "events": {
+      "button_press": "light",
+      "tab_change": "selection",
+      "add_to_cart": "medium",
+      "invoice_success": "success",
+      "error_alert": "error",
+      "grid_list_toggle": "selection"
+    }
+  },
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Executive business cockpit providing a high-level summary of daily performance, pending actions, and recent activity.",
+      "states": {
+        "loading": "Skeleton loader for KPI cards and charts.",
+        "empty": "No data yet. Illustration + 'Log your first sale to see insights'.",
+        "error": "Failed to load dashboard data. 'Retry' button."
+      },
+      "layout": "Hero header with 'Good morning' personalization over a subtle premium abstract background. Horizontal swipe row for 'Needs Your Attention' (amber/red alerts). 2-column grid for key KPIs formatted in Indian currency (₹ L/Cr). Interactive Line Chart card (7D/30D toggle). Recent Activity timeline block at the bottom."
+    },
+    {
+      "name": "POS / Checkout",
+      "purpose": "Fast, high-density terminal for creating invoices and managing the cart.",
+      "states": {
+        "loading": "Spinner centered in the product grid.",
+        "empty": "Empty cart state with an illustration and 'Scan a barcode or add products' CTA.",
+        "error": "Error fetching product catalog."
+      },
+      "layout": "Top sticky search bar and barcode scan button. Grid/List toggle in the subheader. Main area is an image-driven product picker. Bottom sheet (or right drawer on tablet) handles the active Cart, Customer details, and pinned 'Charge ₹X' primary CTA at the bottom over the safe area."
+    },
+    {
+      "name": "Inventory",
+      "purpose": "Overview of products, accessories, stock levels, and quick stock transfer actions.",
+      "states": {
+        "loading": "List skeleton with thumbnail placeholders.",
+        "empty": "Illustration + 'No products found'.",
+        "error": "Error fetching inventory."
+      },
+      "layout": "Sticky filter chips (All, Low Stock, Phones, Accessories). Data list with thumbnails, product names, SKU, and right-aligned stock status badges (Green/Amber/Red). Tapping a row opens a bottom sheet with detailed product specs, stock across shops, and edit/transfer actions."
+    }
+  ],
+  "images": {
+    "dashboard_hero_bg": {
+      "url": "https://images.pexels.com/photos/7135013/pexels-photo-7135013.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "dark": "https://images.unsplash.com/photo-1621768216002-5ac171876625?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxhcHBsZSUyMGxvZ28lMjB0cmFuc3BhcmVudHxlbnwwfHx8fDE3ODc1ODY1MzB8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Subtle premium gradient background for the executive header."
+    },
+    "apple_logo": {
+      "url": "https://images.unsplash.com/photo-1621768216002-5ac171876625?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxhcHBsZSUyMGxvZ28lMjB0cmFuc3BhcmVudHxlbnwwfHx8fDE3ODc1ODY1MzB8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Apple brand logo"
+    },
+    "samsung_logo": {
+      "url": "https://images.pexels.com/photos/38691715/pexels-photo-38691715.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Samsung brand logo"
+    },
+    "empty_state_illustration": {
+      "url": "https://images.pexels.com/photos/8833419/pexels-photo-8833419.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "3D hand holding a smartphone representing empty data or action required."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the color palette. In Light mode, do NOT use pure white for the main background; use #F9FAFB. In Dark mode, use #111827, not pure black.",
+    "Implement Indian currency formatting strictly: e.g., ₹42,850, ₹8.42L, ₹1.24Cr. Ensure numbers in the Executive Dashboard are appropriately sized (large hierarchy for values, smaller for labels).",
+    "Do NOT use glassmorphism. The user explicitly requested 'NOT full glassmorphism', favoring subtle depth, soft neutral backgrounds, and controlled shadows (tier 1).",
+    "For the POS screen, ensure the cart summary and the 'Charge / Pay' primary CTA is always pinned above the home indicator, regardless of scrolling through the product catalog.",
+    "Data components (KPI cards, Table rows, Inventory items) should utilize the structural clarity of Brutalist layouts (clear alignment, obvious hierarchy) but softened with 'iOS-Native Clean' radii (md: 10px, lg: 16px) to maintain a premium feel without looking cluttered.",
+    "Include a 'Needs Your Attention' section in the Dashboard with actionable cards using semantic colors (warning/error).",
+    "Always use the 'Inter' font (weights 400/500 only, size creates hierarchy). Do NOT use bold cuts like 700 or 800.",
+    "When displaying products/brands, utilize the real fetched logos (e.g., Apple, Samsung) from the images list instead of generic vector icons or initials where applicable.",
+    "Ensure the success state after an invoice is created is a premium, full-screen takeover (or large modal) featuring a big checkmark, the Invoice number, and clear actions (Print/Share/Download)."
+  ]
+}

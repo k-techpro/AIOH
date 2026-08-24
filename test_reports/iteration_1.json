@@ -1,0 +1,43 @@
+{
+  "summary": "Backend-only testing for RetailPrime ERP against public URL https://inventory-pro-1107.preview.emergentagent.com. Executed 26 pytest cases across shops, dashboard, products, customers, invoices, expenses, transfers, GST report and seed endpoints. All 26 tests PASSED (100%). Verified: (a) 2 shops with 7-day trend arrays and today stats, (b) dashboard has all required KPIs and 30-day trend, (c) product/customer/invoice CRUD + filters (category/search/is_accessory/status) work, (d) invoice creation generates INV-2026-XXXXX numbers AND decrements product.stock (before/after verified) AND updates customer totals, (e) transfer creation generates TRF-XXXX numbers, (f) GST report cgst+sgst==total_gst, (g) POST /api/seed re-seeds with 2 shops / >=70 products / 150 customers / >=500 invoices / >=20 expenses / >=50 transfers, (h) NO _id ever leaks in any response (recursive check on every payload). Note: After running the seed test the DB was refreshed, previously created TEST_* entities are cleared, which is correct behavior.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/products, /api/customers, /api/expenses, /api/invoices, /api/transfers", "issue": "Accept unvalidated Dict[str, Any] instead of Pydantic models defined in the file (Product/Customer/Invoice/Expense/StockTransfer). Server never enforces required fields or types, so malformed clients can insert junk. Not a blocker for the current MVP but should be tightened by binding the Pydantic models."},
+      {"endpoint": "POST /api/invoices", "issue": "invoice_number generated via count_documents() is not concurrency-safe and can collide if two invoices are created simultaneously. Consider an atomic counter (findAndModify) or UUID+sequence."},
+      {"endpoint": "POST /api/invoices", "issue": "Stock is decremented without a guard for insufficient stock; can go negative. Consider checking product.stock >= item.quantity before $inc."},
+      {"endpoint": "GET /api/reports/gst/{shop_id}", "issue": "IGST is hardcoded to 0 and CGST/SGST are always half of total_gst without checking whether the invoice is inter-state (based on customer GSTIN state code). Acceptable for MVP since seeded data is intra-state Chennai only."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional/nice-to-have) Bind Pydantic models to POST endpoints for input validation.",
+    "(Optional) Make invoice_number / transfer_number generation atomic to avoid race conditions.",
+    "(Optional) Prevent invoice creation when item.quantity > product.stock (currently allows negative stock)."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 700+ lines and mixes routes + seed logic; consider splitting seed into a separate module.",
+    "clean(doc) helper exists but is not needed because every find() already projects {\"_id\": 0}. On POST endpoints the payload dict was never assigned an _id, so clean() is a no-op there \u2014 harmless but confusing.",
+    "profit_of() rebuilds prod_map on every call; move it outside the function for O(N) rather than O(N*days).",
+    "CORS allow_origins=[\"*\"] with allow_credentials=True is technically invalid per CORS spec (browsers ignore credentials with wildcard). OK for public no-auth API but note for future."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (new)",
+    "/app/test_reports/pytest/pytest_results.xml (new)"
+  ],
+  "success_rate": {"backend": "100% (26/26)", "frontend": "N/A - not requested"},
+  "seed_data_creation": "POST /api/seed was called by test_seed_and_counts and re-seeded 2 shops, ~72 products, 150 customers, ~800 invoices, ~35 expenses, 54 transfers. This is the last operation in the run and left the DB in a clean seeded state.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 26 backend tests currently pass. Test file at /app/backend/tests/backend_test.py loads BASE_URL from /app/frontend/.env (EXPO_PUBLIC_BACKEND_URL). Every response is recursively checked for _id leak via _no_id() helper. TestSeed runs last and re-seeds the DB. If frontend testing is added later, note that dashboard aggregation is expensive on large invoice sets (currently ~800 invoices, response OK <1s).",
+  "rca_of_issue": "N/A - no bugs found"
+}
