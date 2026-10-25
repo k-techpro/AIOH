@@ -1,0 +1,233 @@
+The NODE_ENV environment variable is required but was not specified. Ensure the project is bundled with Expo CLI or NODE_ENV is set. Using only .env.local and .env
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':react-native-reanimated:buildCMakeRelWithDebInfo[x86][reanimated]'.
+> com.android.ide.common.process.ProcessException: ninja: Entering directory `C:\AIOH\AIOH\frontend\node_modules\react-native-reanimated\android\.cxx\RelWithDebInfo\5w6u6649\x86'
+  [0/2] Re-checking globbed directories...
+  [1/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/transforms/vectors.cpp.o
+  [2/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:createBundleReleaseJsAndAssets'.
+> Process 'command 'cmd'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 5m 32s
+ed.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/transforms/TransformOp.cpp.o
+  [3/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSTransitionConfig.cpp.o
+  [4/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/common.cpp.o
+  [5/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSLength.cpp.o
+  [6/72] Build
+  [3/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSTransitionConfig.cpp.o
+  [4/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/common.cpp.o
+  [5/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSBoolean.cpp.o
+  [6/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSLength.cpp.o
+  [7/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSKeyframesConfig.cpp.o
+  [8/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSKeyword.cpp.o
+  [9/72] Buildinging CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSNumber.cpp.o
+  [7/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSBoolean.cpp.o
+  [8/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSKeyframesConfig.cpp.o
+  [9/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSDiscreteArray.cpp.o
+  [10/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSKeyword.cpp.o
+  [11/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSColor.cpp.o
+  [12/72] Buildin CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSDiscreteArray.cpp.o
+  [10/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSNumber.cpp.o
+  [11/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/common/transforms/TransformMatrix3D.cpp.o
+  [12/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSColor.cpp.o
+  [13/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/EasingFunctions.cpp.o
+  [14/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSAnimationConfig.cpp.o
+  [15/72] Building CXX object CMakg CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/common/transforms/TransformMatrix3D.cpp.o
+  [13/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/cubicBezier.cpp.o
+  [14/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSAnimationConfig.cpp.o
+  [15/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/steps.cpp.o
+  [16/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/linear.cpp.o
+  [17/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSValueVariant.cpp.o
+  [18/72] Building CXX object CMakeFiles/reanimated.dir/C_eFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/cubicBezier.cpp.o
+  [16/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSValueVariant.cpp.o
+  [17/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/linear.cpp.o
+  [18/72] Building CXX object CMakeFiles/reanima/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/EasingFunctions.cpp.o
+  [19/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSAnimation.cpp.o
+  [20/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSAngle.cpp.o
+  [21/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frted.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSAnimation.cpp.o
+  [19/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/steps.cpp.o
+  [20/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSAngle.cpp.o
+  [21/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851afaceontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSTransition.cpp.o
+  [22/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/ArrayPropertiesInterpolator.cpp.o
+  [23/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/styles/TransitionStyleInterpolator.cpp.o
+  [24/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fb1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/PropertyInterpolator.cpp.o
+  [22/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/GroupPropertiesInterpolator.cpp.o
+  [23/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/InterpolatorFactory.cpp.o
+  [24/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSTransition.cpp.o
+  [25/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/ArrayPropertiesInterpolator.cpp.o
+  [26/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/styles/TransitionStyleInterpolator.cpp.o
+  [27/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/d4911/Common/cpp/reanimated/CSS/interpolation/groups/GroupPropertiesInterpolator.cpp.o
+  [25/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/PropertyInterpolator.cpp.o
+  [26/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/InterpolatorFactory.cpp.o
+  [27/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/ninja: Entering directory `C:\AIOH\AIOH\frontend\node_modules\react-native-reanimated\android\.cxx\RelWithDebInfo\5w6u6649\x86'
+  [0/2] Re-checking globbed directories...
+  [1/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/transforms/TransformOp.cpp.o
+  [2/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSTransitionConfig.cppcpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp.o
+  [28/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperation.cpp.o
+  [29/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/RawProgressProvider.cpp.o
+  [30/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp.o
+  [28/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformsStyleInterpolator.cpp.o
+  [29/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperation.cpp.o
+  [30/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/RecordPropertiesInterpolator.cpp.o
+  [31/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/RawProgressProvider.cpp.o
+  [32/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/ValueInterpolator.cpp.o
+  [33/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanicpp/reanimated/CSS/interpolation/transforms/operations/matrix.cpp.o
+  [31/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformsStyleInterpolator.cpp.o
+  [32/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/ResolvableValueInterpolator.cpp.o
+  [33/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/misc/ViewStylesRepository.cpp.o
+  [34/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/SimpleValueInterpolator.cpp.o
+  [35/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/RecordPropertiesInterpolator.cpp.o
+  [36/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated.o
+  [3/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/common.cpp.o
+  [4/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSKeyword.cpp.o
+  [5/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSBoolean.cpp.o
+  [6/71] Buildmated/Common/cpp/reanimated/CSS/misc/ViewStylesRepository.cpp.o
+  [34/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/ResolvableValueInterpolator.cpp.o
+  [35/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/SimpleValueInterpolator.cpp.o
+  [36/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Coming CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/cubicBezier.cpp.o
+  [7/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSDiscreteArray.cpp.o
+  [8/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSNumber.cpp.o
+  [9/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSAnimation.cpp.o
+  [10/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSColor.cpp.o
+  [11/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSLength.cpp.o
+  [12/71] Building CXX object CMamon/cpp/reanimated/CSS/utils/algorithms.cpp.o
+  [37/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/progress/AnimationProgressProvider.cpp.o
+  [38/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSKeyframesRegistry.cpp.o
+  [39/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforkeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSKeyframesConfig.cpp.o
+  [13/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/common/transforms/TransformMatrix3D.cpp.o
+  [14/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/configs/CSSAnimationConfig.cpp.o
+  [15/71] Building CXX object CMakeFiles/reani/Common/cpp/reanimated/CSS/utils/algorithms.cpp.o
+  [37/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/ValueInterpolator.cpp.o
+  [38/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/progress/AnimationProgressProvider.cpp.o
+  [39/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/svg/values/SVGLength.cpp.o
+  [40/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSKeyframesRegistry.cpp.o
+  [41/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSTransitionsRegistry.cpp.o
+  [42/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/progress/TransitionProgressPrms/operations/matrix.cpp.o
+  [40/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSTransitionsRegistry.cpp.o
+  [41/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/svg/values/SVGStrokeDashArray.cpp.o
+  [42/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/progress/TransitionPmated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSAngle.cpp.o
+  [16/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/EasingFunctions.cpp.o
+  [17/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/values/CSSValueVariant.cpp.o
+  [18/71] Building CXX object CMakeFiles/reanimovider.cpp.o
+  [43/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registries/StaticPropsRegistry.cpp.o
+  [44/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/svg/values/SVGStrokeDashArray.cpp.o
+  [45/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/registries/rogressProvider.cpp.o
+  [43/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registries/StaticPropsRegistry.cpp.o
+  [44/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSAnimationsRegistry.cpp.o
+  [45/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/DelayedItemsManager.cpp.o
+  [46/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/svg/values/SVGLength.cpp.o
+  [47/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/props.cpp.o
+  [48/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/keyframes.cCSSAnimationsRegistry.cpp.o
+  [46/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/DelayedItemsManager.cpp.o
+  [47/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/interpolators.cpp.o
+  [48/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/keyframes.cpp.o
+  [49/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ReanimatedCommitHook.cpp.o
+  [50/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/props.cpp.o
+  [51/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/NativeModules/ReanimatedModuleProxySpec.cpp.o
+  [52/72] Building Cated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/steps.cpp.o
+  [19/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/easing/linear.cpp.o
+  [20/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/ArrayPropertiesInterpolator.cpp.o
+  [21/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontpp.o
+  [49/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/NativeModules/ReanimatedModuleProxySpec.cpp.o
+  [50/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ReanimatedMountHook.cpp.o
+  [51/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/interpolators.cpp.o
+  [52/72] Building CXXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ReanimatedMountHook.cpp.o
+  [53/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsManager.cpp.o
+  [54/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/transforms/Quaternion.cpp.o
+  [55/72] Building CXX object CMakend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSTransition.cpp.o
+  [22/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp.o
+  [23/71] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/InterpolatorFactory.cpp.o
+  [24/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851afacX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsManager.cpp.o
+  [53/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ReanimatedCommitHook.cpp.o
+  [54/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/transforms/Quaternion.cpp.o
+  [55/72] Building CXX object CMake1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/PropertyInterpolator.cpp.o
+  [25/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/groups/GroupPropertiesInterpolator.cpp.o
+  [26/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperation.cpp.o
+  [27/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/ceFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/RuntimeDecorators/UIRuntimeDecorator.cpp.o
+  [56/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp.o
+  FAILED: CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp.o 
+  C:\Users\kombaiya\AppData\Local\Android\Sdk\ndk\27.1.12297006\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe --target=i686-none-linux-android24 --sysroot=C:/Users/kombaiya/AppData/Local/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DRN_SERIALIZABLE_STATE -Dreanimated_EXPORTS -IC:/AIOH/AIOH/frontend/node_modules/react-native-reanimated/android/../Common/cpp -IC:/AIOH/AIOH/frontend/node_modules/react-native-reanimated/android/src/main/cpp -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactCommon -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactCommon/yoga -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactAndroid/src/main/jni/react/turbomodule -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactCommon/callinvoker -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactCommon/runtimeexecutor -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactCommon/jsiexecutor -IC:/AIOH/AIOH/frontend/node_modules/react-native/ReactCommon/react/renderer/graphics/platform/cxx -IC:/AIOH/AIOH/frontend/node_modules/react-native-worklets/Common/cpp -IC:/AIOH/AIOH/frontend/node_modules/react-native-worklets/android/src/main/cpp -isystem C:/Users/kombaiya/.gradle/caches/8.14.3/transforms/42a5592dfd0beda691ce18fec222ecc3/transformed/react-android-0.81.5-release/prefab/modules/jsi/include -isystem C:/Users/kombaiya/.gradle/caches/8.14.3/transforms/3b33d1b76b29c5958a8f3eb0170b7560/transformed/fbjni-0.7.0/prefab/modules/fbjni/include -isystem C:/Users/kombaiya/.gradle/caches/8.14.3/transforms/42a5592dfd0beda691ce18fec222ecc3/transformed/react-android-0.81.5-release/prefab/modules/reactnative/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -DREACT_NATIVE_MINOR_VERSION=81    -DREANIMATED_VERSION=4.1.1    -DREANIMATED_FEATURE_FLAGS="[EXPERIMENTAL_CSS_ANIMATIONS_FOR_SVG_COMPONENTS:false][RUNTIME_TEST_FLAG:false][DISABLE_COMMIT_PAUSING_MECHANISM:false][ANDROID_SYNCHRONOUSLY_UPDATE_UI_PROPS:false][USE_SYNCHRONIZABLE_FOR_MUTABLES:false]" -fno-omit-frame-pointer -fstack-protector-all -fvisibility=hidden -ffunction-sections -fdata-sections -DNDEBUG -O2 -g -DNDEBUG -fPIC -DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_MOBILE=1 -DFOLLY_HAVE_RECVMMSG=1 -DFOLLY_HAVE_PTHREAD=1 -DFOLLY_HAVE_XSI_STRERROR_R=1 -Wall -Werror -fexceptions -frtti -std=c++20 -DLOG_TAG=\"ReactNative\" -std=gnu++20 -MD -MT CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp.o -MF CMakeFiles\reanimated.dir\C_\AIOH\AIOH\frontend\node_modules\react-native-reanimated\Common\cpp\reanimated\Fabric\ShadowTreeCloner.cpp.o.d -o CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp.o -c C:/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp
+  deleting depfile: Permissiopp/reanimated/CSS/interpolation/groups/RecordPropertiesInterpolator.cpp.o
+  [28/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/values/ResolvableValueInterpolator.cpp.o
+  [29/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/misc/ViewStylesRepository.cpp.o
+  [30/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/TransformsStyleInterpolator.cpp.o
+  [31/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/styles/TransitionStyleInterpolator.cpp.o
+  [32/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/RawProgressProvider.cpp.o
+  [33/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cppeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/RuntimeDecorators/UIRuntimeDecorator.cpp.o
+  [56/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp.o
+  [57/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/updates/UpdatesRegistry.cpp.o
+  [58/72] Building CXX object CMan denied
+  [57/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Tools/FeatureFlags.cpp.o
+  [58/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/Fabric/updates/AnimatedPropsRegistry.cpp.o
+  [59/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Tools/ReanimatedVersion.cpp.o
+  [6keFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/Fabric/updates/AnimatedPropsRegistry.cpp.o
+  [59/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsUtils.cpp.o
+  [60/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Tools/FeatureFlags.cpp.o
+  [61/72] Building CXX object CMakeFiles/reanimated.dir0/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/NativeModules/PropValueProcessor.cpp.o
+  [61/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/AnimatedSensor/AnimatedSensorModule.cpp.o
+  [62/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/common/transforms/TransformMatrix2D.cpp.o
+  [63/72] /C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Tools/ReanimatedVersion.cpp.o
+  [62/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/AnimatedSensor/AnimatedSensorModule.cpp.o
+  [63/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/NativeModules/PropValueProcessor.cpp.o
+  [64/72] Building CXX object CMakeFiles/reanimated/reanimated/CSS/interpolation/values/ValueInterpolator.cpp.o
+  [34/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/transforms/operations/matrix.cpp.o
+  [35/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/algorithms.cpp.o
+  [36/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/interpolation/Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/updates/UpdatesRegistry.cpp.o
+  [64/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsUtils.cpp.o
+  [65/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/RuntimeDecorators/RNRuntimeDecorator.cpp.o
+  [66/72] Building C.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/RuntimeDecorators/RNRuntimeDecorator.cpp.o
+  [65/72] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/Fabric/updates/UpdatesRegistryManager.cpp.o
+  [66/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/common/transforms/TransformMatrix2D.cpp.o
+  [67/72] Building CXX object CMakeFiles/reanimated.dirvalues/SimpleValueInterpolator.cpp.o
+  [37/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/progress/AnimationProgressProvider.cpp.o
+  [38/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registries/StaticPropsRegistry.cpp.o
+  [39/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/CSS/progress/TransitionProgressProvider.cpp.o
+  [40/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/svg/values/SVGLength.cpp.o
+  [41/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/keyframes.cpp.o
+  [42/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/interpolators.cpp.o
+  [43/71] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSTransitionsRegistry.cpp.o
+  [44/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSKeyframesRegistry.cpp.o
+  [45/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/svg/values/SVGStrokeDashArray.cpp.o
+  [46/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ReanimatedMountHook.cpp.o
+  [47/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/DelayedItemsManager.cpp.o
+  [48/71] Building CXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/CSS/registries/CSSAnimationsRegistry.cpp.o
+  [49/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/utils/props.cpp.o
+  [50/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ReanimatedCommitHook.cpp.o
+  [51/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/NativeModules/ReanimatedModuleProxySpec.cpp.o
+  [52/71] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsManager.cpp.o
+  [53/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/common/transforms/Quaternion.cpp.o
+  [54/71] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/Fabric/ShadowTreeCloner.cpp.o
+  [55/71] Building CXX object CMakeFilesXX object CMakeFiles/reanimated.dir/bcc6bbdfad55441dbab18ad20ef07a32/react-native-reanimated/Common/cpp/reanimated/Fabric/updates/UpdatesRegistryManager.cpp.o
+  [67/72] Building CXX object CMakeFiles/reanimated.dir/609f80a851aface1d2a7b7731fbd4911/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp.o
+  [68/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/NativeModules/ReanimatedModuleProxy.cpp.o
+  [69/72] Building CXX object CMakeFiles/reanimated.dir/C_/AIOH/AIOH/frontend/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/InterpolatorRegistry.cpp.o
+  ninja: build stopped: subcommand failed.
+  
+  C++ build system [build] failed while executing:
+      @echo off
+      "C:\\Users\\kombaiya\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe" ^
+        -C ^
+        "C:\\AIOH\\AIOH\\frontend\\node_modules\\react-native-reanimated\\android\\.cxx\\RelWithDebInfo\\5w6u6649\\x86" ^
+        reanimated
+    from C:\AIOH\AIOH\frontend\node_modules\react-native-reanimated\android
+  ninja: error: remove(CMakeFiles\reanimated.dir\C_\AIOH\AIOH\frontend\node_modules\react-native-reanimated\Common\cpp\reanimated\Fabric\ShadowTreeCloner.cpp.o.d): Permission denied
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 7m 43s

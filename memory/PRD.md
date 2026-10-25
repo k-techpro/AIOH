@@ -42,6 +42,6 @@ Seeded with realistic Indian data: 2 shops (Poonamallee, Kundrathur), 72 product
 
 ## Known limitations / next builds
 
-- Returns/refunds workflow, Staff & Roles config, Notifications feed, Services module are placeholders ready for extension
+- Returns/refunds, live stock/payment notifications, services, and staff attendance are implemented. Granular staff permissions remain an extension point.
 - Real barcode scanning uses camera plugin (not wired in preview)
 - Sales/Product/Stock deep reports show KPI + summary; drill-downs to add on next iteration

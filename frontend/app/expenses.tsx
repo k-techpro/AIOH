@@ -1,124 +1,136 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Pressable, ActivityIndicator, Modal, TextInput, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useMemo, useState } from "react";
+import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { getApp } from "@react-native-firebase/app";
+import { getAuth } from "@react-native-firebase/auth";
 import { useTheme } from "../src/theme/theme";
 import { formatINR, formatDate } from "../src/utils/format";
-import { api } from "../src/api/client";
-import { useAppStore } from "../src/store/shop";
-import { Card, PrimaryButton, EmptyState } from "../src/components/ui";
+import { Card, EmptyState, PrimaryButton } from "../src/components/ui";
+import { useMockStore } from "../src/store/mock-data";
+import { useCollection } from "../src/hooks/useCollection";
+import { createShopRecord, deleteShopRecord, updateShopRecord } from "../src/services/repository";
+import { EXPENSE_PAYMENT_METHODS, EXPENSE_TYPES, blankExpenseForm, buildExpensePayload, recordDateMs, summarizeExpenses, validateExpense, type ExpenseForm } from "../src/domain/expenses.ts";
 
-const CATS = ["Rent", "Electricity", "Staff Salary", "Transport", "Supplier Payment", "Maintenance", "Marketing", "Other"];
+const Chip = ({ label, active, onPress, colors }: any) => (
+  <Pressable onPress={onPress} style={{ paddingHorizontal: 13, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: active ? colors.brand : colors.border, backgroundColor: active ? colors.brand : "transparent", marginRight: 8, marginBottom: 8 }}>
+    <Text style={{ color: active ? colors.onBrandPrimary : colors.onSurface, fontWeight: "600", fontSize: 13 }}>{label}</Text>
+  </Pressable>
+);
 
+// Expenses — same collection / payload as the web page: type (+custom), description, amount, method, paid-to, remarks.
 export default function Expenses() {
-  const { colors } = useTheme();
+  const { colors, gradients } = useTheme();
   const router = useRouter();
-  const { shopId } = useAppStore();
-  const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [show, setShow] = useState(false);
-  const [cat, setCat] = useState(CATS[0]);
-  const [amount, setAmount] = useState("");
-  const [desc, setDesc] = useState("");
+  const shops = useMockStore((s) => s.shops);
+  const { data: expenses } = useCollection("expenses");
+  const [search, setSearch] = useState("");
+  const [editing, setEditing] = useState<any | null | undefined>();
+  const [form, setForm] = useState<ExpenseForm>(blankExpenseForm());
+  const [busy, setBusy] = useState(false);
+  const set = (k: keyof ExpenseForm, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
-  const load = async () => {
-    if (!shopId) return;
-    setLoading(true);
-    const e = await api.listExpenses(shopId);
-    setItems(e);
-    setLoading(false);
+  const startToday = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }, []);
+  const startMonth = useMemo(() => { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); return d.getTime(); }, []);
+  const sum = (from: number) => expenses.filter((e) => recordDateMs(e) >= from).reduce((n, e) => n + (Number(e.amount) || 0), 0);
+  const summary = useMemo(() => summarizeExpenses(expenses), [expenses]);
+  const topType = Object.entries(summary.byType).sort((a, b) => b[1] - a[1])[0];
+  const rows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return expenses.filter((e) => !q || [e.description, e.expense_type, e.category, e.paidTo, e.payment_method].some((v) => String(v || "").toLowerCase().includes(q))).sort((a, b) => recordDateMs(b) - recordDateMs(a));
+  }, [expenses, search]);
+
+  const open = (e?: any) => {
+    setEditing(e || null);
+    setForm(e ? { date: new Date(recordDateMs(e) || Date.now()).toISOString().slice(0, 10), expense_type: e.expense_type || e.category || "General", custom_expense_type: e.custom_expense_type || "", description: e.description || e.title || "", amount: String(e.amount ?? ""), payment_method: e.payment_method || e.method || "Cash", paidTo: e.paidTo || e.paid_to || "", remarks: e.remarks || e.note || "" } : blankExpenseForm());
   };
-  useEffect(() => { load(); }, [shopId]);
-
-  const total = items.reduce((a, e) => a + e.amount, 0);
-  const monthStart = new Date();
-  monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
-  const monthTotal = items.filter((e) => new Date(e.date) >= monthStart).reduce((a, e) => a + e.amount, 0);
-
-  const catTotals: Record<string, number> = {};
-  items.forEach((e) => { catTotals[e.category] = (catTotals[e.category] || 0) + e.amount; });
-  const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
-
-  const create = async () => {
-    if (!amount) return;
-    await api.createExpense({ shop_id: shopId, category: cat, description: desc || cat, amount: parseFloat(amount), payment_method: "cash" });
-    setShow(false); setAmount(""); setDesc("");
-    load();
+  const save = async () => {
+    const err = validateExpense(form);
+    if (err) return Alert.alert("Check expense", err);
+    const user = getAuth(getApp()).currentUser;
+    const payload = buildExpensePayload(form, user?.displayName || user?.email || null);
+    setBusy(true);
+    try {
+      if (editing?.id) await updateShopRecord("expenses", editing.id, payload, shops);
+      else await createShopRecord("expenses", payload, shops);
+      setEditing(undefined);
+    } catch (e: any) { Alert.alert("Expense not saved", e?.message || "Check your connection and try again."); }
+    finally { setBusy(false); }
   };
+  const remove = (e: any) => Alert.alert("Delete expense?", "This cannot be undone.", [{ text: "Cancel", style: "cancel" }, { text: "Delete", style: "destructive", onPress: () => deleteShopRecord("expenses", e.id, shops).then(() => setEditing(undefined)).catch((x) => Alert.alert("Not deleted", x?.message)) }]);
+
+  const field = { backgroundColor: colors.surfaceSecondary, borderRadius: 12, padding: 12, color: colors.onSurface, borderWidth: 1, borderColor: colors.border, fontSize: 15 } as const;
+  const lbl = { color: colors.muted, fontSize: 12, fontWeight: "600" as const, marginBottom: 6, marginTop: 14 };
 
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.surface }}>
-      <View style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 8, flexDirection: "row", alignItems: "center", gap: 10 }}>
         <Pressable testID="back" onPress={() => router.back()}><Ionicons name="chevron-back" size={26} color={colors.onSurface} /></Pressable>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: colors.onSurface, fontSize: 22, fontWeight: "500" }}>Expenses</Text>
-          <Text style={{ color: colors.muted, fontSize: 12 }}>{items.length} entries</Text>
-        </View>
-        <Pressable testID="new-expense" onPress={() => setShow(true)} style={{ backgroundColor: colors.brand, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, flexDirection: "row", alignItems: "center", gap: 4 }}>
-          <Ionicons name="add" size={16} color={colors.onBrandPrimary} />
-          <Text style={{ color: colors.onBrandPrimary, fontSize: 12, fontWeight: "500" }}>Add</Text>
-        </Pressable>
+        <Text style={{ flex: 1, color: colors.onSurface, fontSize: 22, fontWeight: "700" }}>Expenses</Text>
+        <Pressable testID="add-expense" onPress={() => open()}><Ionicons name="add-circle" size={30} color={colors.brand} /></Pressable>
       </View>
-
-      <View style={{ paddingHorizontal: 20, flexDirection: "row", gap: 10 }}>
-        <Card style={{ flex: 1 }}>
-          <Text style={{ color: colors.muted, fontSize: 11, letterSpacing: 0.5 }}>THIS MONTH</Text>
-          <Text style={{ color: colors.error, fontSize: 20, fontWeight: "500", marginTop: 4 }}>{formatINR(monthTotal, true)}</Text>
-        </Card>
-        <Card style={{ flex: 1 }}>
-          <Text style={{ color: colors.muted, fontSize: 11, letterSpacing: 0.5 }}>TOP CATEGORY</Text>
-          <Text style={{ color: colors.onSurface, fontSize: 14, fontWeight: "500", marginTop: 4 }}>{topCat ? topCat[0] : "-"}</Text>
-          {topCat && <Text style={{ color: colors.muted, fontSize: 12 }}>{formatINR(topCat[1], true)}</Text>}
-        </Card>
-      </View>
-
-      {loading ? <ActivityIndicator style={{ marginTop: 20 }} color={colors.brand} /> : (
-        <FlatList
-          data={items}
-          keyExtractor={(e) => e.id}
-          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
-          ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
-          renderItem={({ item }) => (
-            <View style={{ backgroundColor: colors.surfaceSecondary, borderRadius: 12, padding: 14, flexDirection: "row", alignItems: "center" }}>
-              <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: colors.errorBg, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
-                <Ionicons name="wallet-outline" size={16} color={colors.error} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: colors.onSurface, fontSize: 14, fontWeight: "500" }}>{item.category}</Text>
-                <Text style={{ color: colors.muted, fontSize: 11, marginTop: 2 }}>{item.description} · {formatDate(item.date)}</Text>
-              </View>
-              <Text style={{ color: colors.error, fontSize: 15, fontWeight: "500" }}>-{formatINR(item.amount)}</Text>
+      <FlatList
+        data={rows}
+        keyExtractor={(e) => e.id}
+        contentContainerStyle={{ padding: 20, gap: 10 }}
+        ListHeaderComponent={
+          <View style={{ gap: 10, marginBottom: 6 }}>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {[["Today", sum(startToday)], ["This month", sum(startMonth)], ["All time", summary.totals.grand]].map(([l, v]) => (
+                <Card key={String(l)} style={{ flex: 1 }}><Text style={{ color: colors.muted, fontSize: 11 }}>{l}</Text><Text testID={`exp-${String(l).replace(/\s/g, "-")}`} style={{ color: colors.onSurface, fontWeight: "700", marginTop: 4 }}>{formatINR(Number(v))}</Text></Card>
+              ))}
             </View>
-          )}
-          ListEmptyComponent={<EmptyState icon="wallet-outline" title="No expenses" message="Log your business expenses" />}
-        />
-      )}
-
-      <Modal visible={show} animationType="slide" transparent onRequestClose={() => setShow(false)}>
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end" }}>
-          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ backgroundColor: colors.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24 }}>
-            <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 16 }}>
-                <Text style={{ color: colors.onSurface, fontSize: 18, fontWeight: "500" }}>Add Expense</Text>
-                <Pressable testID="close-exp" onPress={() => setShow(false)}><Ionicons name="close" size={24} color={colors.onSurface} /></Pressable>
+            <Card>
+              <Text style={{ color: colors.muted, fontSize: 11 }}>BY METHOD</Text>
+              <Text style={{ color: colors.onSurface, marginTop: 4 }}>Cash {formatINR(summary.totals.cash)} · UPI {formatINR(summary.totals.upi)} · Card {formatINR(summary.totals.card)} · Bank/Other {formatINR(summary.totals.bank)}</Text>
+              {topType && <Text style={{ color: colors.muted, fontSize: 12, marginTop: 6 }}>Top category: {topType[0]} ({formatINR(topType[1])})</Text>}
+            </Card>
+            <TextInput testID="expense-search" value={search} onChangeText={setSearch} placeholder="Search expenses…" placeholderTextColor={colors.muted} style={field} />
+          </View>
+        }
+        ListEmptyComponent={<EmptyState icon="wallet-outline" title="No expenses yet" message="Tap + to record one" />}
+        renderItem={({ item }) => (
+          <Pressable testID={`exp-row-${item.id}`} onPress={() => open(item)}>
+            <Card>
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={{ color: colors.onSurface, fontWeight: "700", flex: 1 }}>{item.custom_expense_type || item.expense_type || item.category}</Text>
+                <Text style={{ color: colors.error, fontWeight: "700" }}>{formatINR(Number(item.amount || 0))}</Text>
               </View>
-              <Text style={{ color: colors.muted, fontSize: 11, letterSpacing: 0.5, marginBottom: 6 }}>CATEGORY</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-                {CATS.map((c) => (
-                  <Pressable key={c} testID={`exp-cat-${c}`} onPress={() => setCat(c)} style={{ flexShrink: 0, height: 36, paddingHorizontal: 14, borderRadius: 999, backgroundColor: cat === c ? colors.brand : colors.surfaceSecondary, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: cat === c ? colors.brand : colors.border }}>
-                    <Text style={{ color: cat === c ? colors.onBrandPrimary : colors.onSurface, fontSize: 12, fontWeight: "500" }}>{c}</Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-              <Text style={{ color: colors.muted, fontSize: 11, letterSpacing: 0.5, marginTop: 12, marginBottom: 6 }}>AMOUNT (₹)</Text>
-              <TextInput testID="exp-amount" value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted} style={{ backgroundColor: colors.surfaceSecondary, borderRadius: 10, padding: 14, fontSize: 20, color: colors.onSurface, borderWidth: 1, borderColor: colors.border, fontWeight: "500" }} />
-              <Text style={{ color: colors.muted, fontSize: 11, letterSpacing: 0.5, marginTop: 12, marginBottom: 6 }}>DESCRIPTION</Text>
-              <TextInput testID="exp-desc" value={desc} onChangeText={setDesc} placeholder="e.g., August rent" placeholderTextColor={colors.muted} style={{ backgroundColor: colors.surfaceSecondary, borderRadius: 10, padding: 12, color: colors.onSurface, borderWidth: 1, borderColor: colors.border }} />
-              <PrimaryButton testID="save-exp" label="Save Expense" onPress={create} style={{ marginTop: 20 }} />
+              <Text style={{ color: colors.muted, fontSize: 12, marginTop: 3 }}>{item.description || item.title} · {item.payment_method || item.method}{item.paidTo ? ` · ${item.paidTo}` : ""}</Text>
+              <Text style={{ color: colors.muted, fontSize: 11, marginTop: 2 }}>{formatDate(recordDateMs(item))}</Text>
+            </Card>
+          </Pressable>
+        )}
+      />
+      <Modal visible={editing !== undefined} animationType="slide" onRequestClose={() => setEditing(undefined)}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.surface }}>
+          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+            <View style={{ padding: 20, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <Text style={{ color: colors.onSurface, fontSize: 21, fontWeight: "700" }}>{editing ? "Edit expense" : "New expense"}</Text>
+              <Pressable onPress={() => setEditing(undefined)}><Ionicons name="close" size={26} color={colors.onSurface} /></Pressable>
+            </View>
+            <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 0, paddingBottom: 60 }} keyboardShouldPersistTaps="handled">
+              <Text style={lbl}>Date (DD/MM/YYYY)</Text>
+              <TextInput value={form.date} onChangeText={(v) => set("date", v)} placeholderTextColor={colors.muted} style={field} />
+              <Text style={lbl}>Expense type</Text>
+              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>{EXPENSE_TYPES.map((t) => <Chip key={t} colors={colors} label={t} active={form.expense_type === t} onPress={() => set("expense_type", t)} />)}</View>
+              {form.expense_type === "Other" && (<><Text style={lbl}>Custom expense type *</Text><TextInput value={form.custom_expense_type} onChangeText={(v) => set("custom_expense_type", v)} placeholderTextColor={colors.muted} style={field} /></>)}
+              <Text style={lbl}>Description *</Text>
+              <TextInput testID="expense-description" value={form.description} onChangeText={(v) => set("description", v)} placeholder="What was this for?" placeholderTextColor={colors.muted} style={field} />
+              <Text style={lbl}>Amount (₹) *</Text>
+              <TextInput testID="expense-amount" value={form.amount} onChangeText={(v) => set("amount", v)} keyboardType="decimal-pad" placeholder="0" placeholderTextColor={colors.muted} style={field} />
+              <Text style={lbl}>Payment method</Text>
+              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>{EXPENSE_PAYMENT_METHODS.map((m) => <Chip key={m} colors={colors} label={m} active={form.payment_method === m} onPress={() => set("payment_method", m)} />)}</View>
+              <Text style={lbl}>Paid to</Text>
+              <TextInput value={form.paidTo} onChangeText={(v) => set("paidTo", v)} placeholderTextColor={colors.muted} style={field} />
+              <Text style={lbl}>Remarks</Text>
+              <TextInput value={form.remarks} onChangeText={(v) => set("remarks", v)} multiline placeholderTextColor={colors.muted} style={[field, { minHeight: 70, textAlignVertical: "top" }]} />
+              <PrimaryButton testID="expense-save" label={busy ? "Saving…" : "Save expense"} onPress={save} disabled={busy} gradient={gradients.brand} style={{ marginTop: 24 }} />
+              {editing?.id && <Pressable onPress={() => remove(editing)} style={{ alignItems: "center", padding: 14, marginTop: 12, backgroundColor: colors.errorBg, borderRadius: 12 }}><Text style={{ color: colors.error, fontWeight: "600" }}>Delete expense</Text></Pressable>}
             </ScrollView>
           </KeyboardAvoidingView>
-        </View>
+        </SafeAreaView>
       </Modal>
     </SafeAreaView>
   );

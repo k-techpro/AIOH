@@ -86,3 +86,7 @@ android-sdk/
 credentials.json
 *.key
 .credentials
+# Local Firebase recovery credentials and generated migration reports.
+aioh-retailprime-firebase-adminsdk-*.json
+frontend/migration-*.json
+frontend/android/release-signing.properties

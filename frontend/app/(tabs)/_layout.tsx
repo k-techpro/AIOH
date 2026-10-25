@@ -49,12 +49,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="more"
+        name="reports"
         options={{
-          title: "More",
-          tabBarIcon: ({ color, size }) => <Ionicons name="menu-outline" color={color} size={size} />,
+          title: "Reports",
+          tabBarIcon: ({ color, size }) => <Ionicons name="analytics-outline" color={color} size={size} />,
         }}
       />
+      <Tabs.Screen name="more" options={{ href: null }} />
     </Tabs>
   );
 }

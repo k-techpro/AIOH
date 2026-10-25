@@ -21,10 +21,12 @@ export function formatPercent(n: number): string {
   return `${sign}${n.toFixed(1)}%`;
 }
 
-export function formatDate(iso: string): string {
+export function formatDate(iso: any): string {
   try {
-    const d = new Date(iso);
-    return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    const value = iso?.toDate ? iso.toDate() : iso;
+    const d = new Date(value);
+    if (!Number.isFinite(d.getTime())) return "—";
+    return d.toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric" });
   } catch {
     return iso;
   }
@@ -33,9 +35,21 @@ export function formatDate(iso: string): string {
 export function formatTime(iso: string): string {
   try {
     const d = new Date(iso);
+    if (!Number.isFinite(d.getTime())) return "—";
     return d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
   } catch {
     return iso;
+  }
+}
+
+export function formatDateTime(value: any): string {
+  try {
+    const raw = value?.toDate ? value.toDate() : value;
+    const d = new Date(raw);
+    if (!Number.isFinite(d.getTime())) return "—";
+    return `${formatDate(d)} ${d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`;
+  } catch {
+    return "—";
   }
 }
 

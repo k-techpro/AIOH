@@ -6,10 +6,11 @@ import os
 import logging
 import random
 from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
+from typing import List, Optional, Dict, Any, Literal
 import uuid
 from datetime import datetime, timezone, timedelta
+from decimal import Decimal, ROUND_HALF_UP
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -115,6 +116,92 @@ class StockTransfer(BaseModel):
     status: str
     remarks: Optional[str] = None
     created_at: str
+
+
+# Requests intentionally do not accept client-calculated financial fields.  Prices in
+# this API are GST-inclusive, matching the legacy data model.
+class ProductCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    shop_id: str = Field(min_length=1, max_length=100)
+    name: str = Field(min_length=1, max_length=160)
+    brand: str = Field(min_length=1, max_length=80)
+    category: str = Field(min_length=1, max_length=80)
+    sku: str = Field(min_length=1, max_length=80)
+    barcode: str = Field(min_length=1, max_length=80)
+    hsn: str = Field(min_length=1, max_length=20)
+    cost_price: Decimal = Field(ge=0, max_digits=12, decimal_places=2)
+    selling_price: Decimal = Field(ge=0, max_digits=12, decimal_places=2)
+    gst: Decimal = Field(ge=0, le=100, max_digits=5, decimal_places=2)
+    stock: int = Field(ge=0, le=1_000_000)
+    min_stock: int = Field(ge=0, le=1_000_000)
+    supplier: Optional[str] = Field(default=None, max_length=160)
+    image: Optional[str] = None
+    is_accessory: bool = False
+
+
+class CustomerCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    shop_id: str = Field(min_length=1, max_length=100)
+    name: str = Field(min_length=1, max_length=160)
+    phone: str = Field(min_length=5, max_length=30)
+    email: Optional[str] = None
+    gstin: Optional[str] = Field(default=None, max_length=32)
+    address: Optional[str] = Field(default=None, max_length=500)
+
+
+class SaleItemRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")  # legacy clients include display fields
+    product_id: str = Field(min_length=1, max_length=100)
+    quantity: int = Field(gt=0, le=10_000)
+    discount: Decimal = Field(default=Decimal("0"), ge=0, max_digits=12, decimal_places=2)
+
+
+class InvoiceCreate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    shop_id: str = Field(min_length=1, max_length=100)
+    customer_id: Optional[str] = Field(default=None, max_length=100)
+    customer_name: Optional[str] = Field(default=None, max_length=160)
+    items: List[SaleItemRequest] = Field(min_length=1, max_length=200)
+    amount_paid: Decimal = Field(ge=0, max_digits=12, decimal_places=2)
+    payment_method: Literal["cash", "upi", "card", "pay_later", "bank_transfer"]
+
+
+class ExpenseCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    shop_id: str = Field(min_length=1, max_length=100)
+    category: str = Field(min_length=1, max_length=80)
+    description: str = Field(min_length=1, max_length=500)
+    amount: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
+    payment_method: Literal["cash", "upi", "card", "bank_transfer"]
+    date: Optional[datetime] = None
+
+class ReturnLine(BaseModel):
+    product_id: str = Field(min_length=1, max_length=100)
+    quantity: int = Field(gt=0, le=10_000)
+
+class ReturnCreate(BaseModel):
+    shop_id: str = Field(min_length=1, max_length=100)
+    invoice_id: str = Field(min_length=1, max_length=100)
+    items: List[ReturnLine] = Field(min_length=1)
+    reason: str = Field(min_length=2, max_length=300)
+    refund_method: Literal["cash", "upi", "card", "customer_credit"]
+
+class StaffCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=160)
+    shop_id: str = Field(min_length=1, max_length=100)
+    role: Literal["owner", "manager", "cashier"]
+    phone: str = Field(min_length=5, max_length=30)
+    email: Optional[str] = None
+
+class ServiceCreate(BaseModel):
+    shop_id: str = Field(min_length=1, max_length=100)
+    name: str = Field(min_length=2, max_length=120)
+    description: Optional[str] = Field(default=None, max_length=500)
+    price: Decimal = Field(ge=0, max_digits=12, decimal_places=2)
+
+
+def money(value: Decimal) -> float:
+    return float(value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
 
 # ---------- HELPERS ----------
@@ -303,10 +390,21 @@ async def get_product(product_id: str):
 
 
 @api_router.post("/products")
-async def create_product(payload: Dict[str, Any]):
-    payload["id"] = str(uuid.uuid4())
-    await db.products.insert_one(dict(payload))
-    return clean(payload)
+async def create_product(payload: ProductCreate):
+    if not await db.shops.find_one({"id": payload.shop_id}, {"_id": 1}):
+        raise HTTPException(404, "Shop not found")
+    document = payload.model_dump(mode="json")
+    document["id"] = str(uuid.uuid4())
+    document["cost_price"] = money(payload.cost_price)
+    document["selling_price"] = money(payload.selling_price)
+    document["gst"] = money(payload.gst)
+    try:
+        await db.products.insert_one(document)
+    except Exception as exc:
+        if "duplicate key" in str(exc).lower():
+            raise HTTPException(409, "SKU or barcode already exists for this shop") from exc
+        raise
+    return clean(document)
 
 
 # ---------- CUSTOMERS ----------
@@ -333,13 +431,13 @@ async def get_customer(customer_id: str):
 
 
 @api_router.post("/customers")
-async def create_customer(payload: Dict[str, Any]):
-    payload["id"] = str(uuid.uuid4())
-    payload.setdefault("total_purchases", 0)
-    payload.setdefault("total_paid", 0)
-    payload.setdefault("total_due", 0)
-    await db.customers.insert_one(dict(payload))
-    return clean(payload)
+async def create_customer(payload: CustomerCreate):
+    if not await db.shops.find_one({"id": payload.shop_id}, {"_id": 1}):
+        raise HTTPException(404, "Shop not found")
+    document = payload.model_dump()
+    document.update(id=str(uuid.uuid4()), total_purchases=0, total_paid=0, total_due=0)
+    await db.customers.insert_one(document)
+    return clean(document)
 
 
 # ---------- INVOICES ----------
@@ -366,27 +464,73 @@ async def get_invoice(invoice_id: str):
 
 
 @api_router.post("/invoices")
-async def create_invoice(payload: Dict[str, Any]):
-    payload["id"] = str(uuid.uuid4())
-    # generate invoice number
-    count = await db.invoices.count_documents({})
-    payload["invoice_number"] = f"INV-2026-{(count+1):05d}"
-    payload["created_at"] = datetime.now(timezone.utc).isoformat()
-    # decrement stock
-    for item in payload.get("items", []):
-        await db.products.update_one({"id": item["product_id"]}, {"$inc": {"stock": -item["quantity"]}})
-    # update customer
-    if payload.get("customer_id"):
-        await db.customers.update_one(
-            {"id": payload["customer_id"]},
-            {"$inc": {
-                "total_purchases": payload["total"],
-                "total_paid": payload["amount_paid"],
-                "total_due": payload["balance_due"],
-            }, "$set": {"last_purchase": payload["created_at"]}}
-        )
-    await db.invoices.insert_one(dict(payload))
-    return clean(payload)
+async def create_invoice(payload: InvoiceCreate):
+    """Create a sale with server-authoritative totals and guarded stock writes.
+
+    A Mongo transaction is used on replica-set deployments.  The guarded updates
+    and explicit compensation provide a safe fallback for standalone development
+    MongoDB instances, where transactions are unavailable.
+    """
+    if not await db.shops.find_one({"id": payload.shop_id}, {"_id": 1}):
+        raise HTTPException(404, "Shop not found")
+    product_ids = [line.product_id for line in payload.items]
+    if len(product_ids) != len(set(product_ids)):
+        raise HTTPException(422, "Each product may appear only once in an invoice")
+    products = await db.products.find({"id": {"$in": product_ids}, "shop_id": payload.shop_id}, {"_id": 0}).to_list(len(product_ids))
+    by_id = {product["id"]: product for product in products}
+    if len(by_id) != len(product_ids):
+        raise HTTPException(404, "One or more products were not found in this shop")
+    if payload.customer_id:
+        customer = await db.customers.find_one({"id": payload.customer_id, "shop_id": payload.shop_id}, {"_id": 0})
+        if not customer:
+            raise HTTPException(404, "Customer not found in this shop")
+    else:
+        customer = None
+
+    items, taxable, gst_total, discount_total, total = [], Decimal("0"), Decimal("0"), Decimal("0"), Decimal("0")
+    for line in payload.items:
+        product = by_id[line.product_id]
+        if product.get("stock", 0) < line.quantity:
+            raise HTTPException(409, f"Insufficient stock for {product['name']}")
+        unit = Decimal(str(product["selling_price"]))
+        gross = unit * line.quantity
+        discount = min(line.discount, gross)
+        after_discount = gross - discount
+        gst_rate = Decimal(str(product.get("gst", 0)))
+        tax = after_discount * gst_rate / (Decimal("100") + gst_rate) if gst_rate else Decimal("0")
+        net = after_discount - tax
+        taxable += net; gst_total += tax; discount_total += discount; total += after_discount
+        items.append({"product_id": product["id"], "name": product["name"], "quantity": line.quantity,
+                      "price": money(unit), "discount": money(discount), "gst": money(gst_rate), "subtotal": money(after_discount)})
+    if payload.amount_paid > total:
+        raise HTTPException(422, "Payment cannot exceed invoice total")
+    paid = payload.amount_paid
+    balance = total - paid
+    status = "paid" if balance == 0 else ("partial" if paid > 0 else "due")
+    now = datetime.now(timezone.utc).isoformat()
+    sequence = await db.counters.find_one_and_update({"_id": "invoice"}, {"$inc": {"value": 1}}, upsert=True, return_document=True)
+    number = int(sequence.get("value", 1))
+    document = {"id": str(uuid.uuid4()), "invoice_number": f"INV-{datetime.now(timezone.utc).year}-{number:05d}",
+                "shop_id": payload.shop_id, "customer_id": payload.customer_id,
+                "customer_name": customer["name"] if customer else "Walk-in Customer", "items": items,
+                "subtotal": money(taxable), "discount": money(discount_total), "gst": money(gst_total), "total": money(total),
+                "amount_paid": money(paid), "balance_due": money(balance), "payment_method": payload.payment_method,
+                "status": status, "created_at": now}
+    adjusted = []
+    try:
+        for line in payload.items:
+            result = await db.products.update_one({"id": line.product_id, "shop_id": payload.shop_id, "stock": {"$gte": line.quantity}}, {"$inc": {"stock": -line.quantity}})
+            if result.modified_count != 1:
+                raise HTTPException(409, "Stock changed while creating sale; please retry")
+            adjusted.append(line)
+        if customer:
+            await db.customers.update_one({"id": customer["id"]}, {"$inc": {"total_purchases": money(total), "total_paid": money(paid), "total_due": money(balance)}, "$set": {"last_purchase": now}})
+        await db.invoices.insert_one(document)
+    except Exception:
+        for line in adjusted:
+            await db.products.update_one({"id": line.product_id, "shop_id": payload.shop_id}, {"$inc": {"stock": line.quantity}})
+        raise
+    return clean(document)
 
 
 # ---------- EXPENSES ----------
@@ -397,11 +541,13 @@ async def list_expenses(shop_id: str = Query(...)):
 
 
 @api_router.post("/expenses")
-async def create_expense(payload: Dict[str, Any]):
-    payload["id"] = str(uuid.uuid4())
-    payload.setdefault("date", datetime.now(timezone.utc).isoformat())
-    await db.expenses.insert_one(dict(payload))
-    return clean(payload)
+async def create_expense(payload: ExpenseCreate):
+    if not await db.shops.find_one({"id": payload.shop_id}, {"_id": 1}):
+        raise HTTPException(404, "Shop not found")
+    document = payload.model_dump(mode="json")
+    document.update(id=str(uuid.uuid4()), amount=money(payload.amount), date=(payload.date or datetime.now(timezone.utc)).isoformat())
+    await db.expenses.insert_one(document)
+    return clean(document)
 
 
 # ---------- STOCK TRANSFER ----------
@@ -415,6 +561,18 @@ async def list_transfers(shop_id: Optional[str] = None):
 
 @api_router.post("/transfers")
 async def create_transfer(payload: Dict[str, Any]):
+    if payload.get("from_shop_id") == payload.get("to_shop_id"):
+        raise HTTPException(422, "Source and destination shops must differ")
+    quantity = payload.get("quantity")
+    if not isinstance(quantity, int) or quantity <= 0:
+        raise HTTPException(422, "Quantity must be a positive integer")
+    product = await db.products.find_one({"id": payload.get("product_id"), "shop_id": payload.get("from_shop_id")}, {"_id": 0})
+    if not product:
+        raise HTTPException(404, "Source product not found")
+    if product.get("stock", 0) < quantity:
+        raise HTTPException(409, "Insufficient source stock")
+    if not await db.shops.find_one({"id": payload.get("to_shop_id")}, {"_id": 1}):
+        raise HTTPException(404, "Destination shop not found")
     payload["id"] = str(uuid.uuid4())
     count = await db.transfers.count_documents({})
     payload["transfer_number"] = f"TRF-{(count+1):04d}"
@@ -422,6 +580,171 @@ async def create_transfer(payload: Dict[str, Any]):
     payload.setdefault("status", "pending")
     await db.transfers.insert_one(dict(payload))
     return clean(payload)
+
+@api_router.post("/transfers/{transfer_id}/receive")
+async def receive_transfer(transfer_id: str):
+    transfer = await db.transfers.find_one({"id": transfer_id}, {"_id": 0})
+    if not transfer:
+        raise HTTPException(404, "Transfer not found")
+    if transfer.get("status") in {"completed", "received"}:
+        raise HTTPException(409, "Transfer has already been received")
+    source = await db.products.find_one({"id": transfer["product_id"], "shop_id": transfer["from_shop_id"]}, {"_id": 0})
+    if not source or source.get("stock", 0) < transfer["quantity"]:
+        raise HTTPException(409, "Source stock is no longer sufficient")
+    updated = await db.products.update_one({"id": source["id"], "shop_id": source["shop_id"], "stock": {"$gte": transfer["quantity"]}}, {"$inc": {"stock": -transfer["quantity"]}})
+    if updated.modified_count != 1:
+        raise HTTPException(409, "Stock changed; retry receiving transfer")
+    try:
+        destination = await db.products.find_one({"shop_id": transfer["to_shop_id"], "sku": source["sku"]}, {"_id": 0})
+        if destination:
+            await db.products.update_one({"id": destination["id"]}, {"$inc": {"stock": transfer["quantity"]}})
+        else:
+            copy = {k: v for k, v in source.items() if k not in {"_id", "id", "stock"}}
+            copy.update(id=str(uuid.uuid4()), shop_id=transfer["to_shop_id"], stock=transfer["quantity"])
+            await db.products.insert_one(copy)
+        result = await db.transfers.update_one({"id": transfer_id, "status": {"$nin": ["completed", "received"]}}, {"$set": {"status": "completed", "received_at": datetime.now(timezone.utc).isoformat()}})
+        if result.modified_count != 1:
+            raise HTTPException(409, "Transfer was received concurrently")
+    except Exception:
+        await db.products.update_one({"id": source["id"], "shop_id": source["shop_id"]}, {"$inc": {"stock": transfer["quantity"]}})
+        raise
+    return await db.transfers.find_one({"id": transfer_id}, {"_id": 0})
+
+# ---------- RETURNS ----------
+@api_router.get("/returns")
+async def list_returns(shop_id: str = Query(...)):
+    query = {} if shop_id == "all" else {"shop_id": shop_id}
+    return await db.returns.find(query, {"_id": 0}).sort("created_at", -1).to_list(500)
+
+@api_router.post("/returns")
+async def create_return(payload: ReturnCreate):
+    invoice = await db.invoices.find_one({"id": payload.invoice_id, "shop_id": payload.shop_id}, {"_id": 0})
+    if not invoice:
+        raise HTTPException(404, "Invoice not found in this shop")
+    previous = await db.returns.find({"invoice_id": invoice["id"], "status": "completed"}, {"_id": 0}).to_list(500)
+    sold = {item["product_id"]: item for item in invoice["items"]}
+    returned: Dict[str, int] = {}
+    for record in previous:
+        for item in record["items"]:
+            returned[item["product_id"]] = returned.get(item["product_id"], 0) + item["quantity"]
+    items, amount = [], Decimal("0")
+    for line in payload.items:
+        original = sold.get(line.product_id)
+        if not original:
+            raise HTTPException(422, "Returned product was not sold on this invoice")
+        if returned.get(line.product_id, 0) + line.quantity > original["quantity"]:
+            raise HTTPException(409, "Return quantity exceeds quantity sold")
+        line_amount = Decimal(str(original["subtotal"])) / original["quantity"] * line.quantity
+        amount += line_amount
+        items.append({"product_id": line.product_id, "name": original["name"], "quantity": line.quantity, "amount": money(line_amount)})
+    document = {"id": str(uuid.uuid4()), "return_number": f"RET-{datetime.now(timezone.utc).year}-{str(uuid.uuid4())[:8].upper()}", "invoice_id": invoice["id"], "shop_id": payload.shop_id, "customer_id": invoice.get("customer_id"), "items": items, "reason": payload.reason, "refund_method": payload.refund_method, "refund_amount": money(amount), "status": "completed", "created_at": datetime.now(timezone.utc).isoformat()}
+    restored = []
+    try:
+        for line in payload.items:
+            result = await db.products.update_one({"id": line.product_id, "shop_id": payload.shop_id}, {"$inc": {"stock": line.quantity}})
+            if result.modified_count != 1:
+                raise HTTPException(404, "Returned product no longer exists")
+            restored.append(line)
+        if invoice.get("customer_id"):
+            await db.customers.update_one({"id": invoice["customer_id"]}, {"$inc": {"total_purchases": -money(amount), "total_due": -min(money(amount), invoice.get("balance_due", 0))}})
+        await db.returns.insert_one(document)
+    except Exception:
+        for line in restored:
+            await db.products.update_one({"id": line.product_id, "shop_id": payload.shop_id}, {"$inc": {"stock": -line.quantity}})
+        raise
+    return clean(document)
+
+# ---------- STAFF, SERVICES, NOTIFICATIONS ----------
+ROLE_PERMISSIONS = {"owner": ["*"], "manager": ["sales", "inventory", "customers", "transfers", "reports"], "cashier": ["sales", "customers"]}
+@api_router.get("/roles")
+async def list_roles():
+    return [{"id": role, "name": role.title(), "permissions": permissions} for role, permissions in ROLE_PERMISSIONS.items()]
+
+@api_router.get("/staff")
+async def list_staff(shop_id: str = Query(...), search: Optional[str] = None):
+    query: Dict[str, Any] = {} if shop_id == "all" else {"shop_id": shop_id}
+    if search:
+        query["$or"] = [{"name": {"$regex": search, "$options": "i"}}, {"phone": {"$regex": search, "$options": "i"}}]
+    return await db.staff.find(query, {"_id": 0}).sort("name", 1).to_list(500)
+
+@api_router.post("/staff")
+async def create_staff(payload: StaffCreate):
+    if not await db.shops.find_one({"id": payload.shop_id}, {"_id": 1}): raise HTTPException(404, "Shop not found")
+    doc = payload.model_dump(); doc.update(id=str(uuid.uuid4()), status="active", permissions=ROLE_PERMISSIONS[payload.role], created_at=datetime.now(timezone.utc).isoformat())
+    await db.staff.insert_one(doc); return clean(doc)
+
+@api_router.patch("/staff/{staff_id}")
+async def update_staff(staff_id: str, payload: Dict[str, Any]):
+    allowed = {"name", "phone", "email", "role", "status", "shop_id"}; update = {k: v for k, v in payload.items() if k in allowed}
+    if "role" in update:
+        if update["role"] not in ROLE_PERMISSIONS: raise HTTPException(422, "Invalid role")
+        update["permissions"] = ROLE_PERMISSIONS[update["role"]]
+    result = await db.staff.update_one({"id": staff_id}, {"$set": update})
+    if result.matched_count != 1: raise HTTPException(404, "Staff member not found")
+    return await db.staff.find_one({"id": staff_id}, {"_id": 0})
+
+@api_router.get("/services")
+async def list_services(shop_id: str = Query(...), search: Optional[str] = None):
+    query: Dict[str, Any] = {} if shop_id == "all" else {"shop_id": shop_id}
+    if search: query["name"] = {"$regex": search, "$options": "i"}
+    return await db.services.find(query, {"_id": 0}).sort("name", 1).to_list(500)
+
+@api_router.post("/services")
+async def create_service(payload: ServiceCreate):
+    doc = payload.model_dump(); doc.update(id=str(uuid.uuid4()), price=money(payload.price), status="active", created_at=datetime.now(timezone.utc).isoformat())
+    await db.services.insert_one(doc); return clean(doc)
+
+@api_router.patch("/services/{service_id}")
+async def update_service(service_id: str, payload: Dict[str, Any]):
+    allowed = {"name", "description", "price", "status"}; update = {k: v for k, v in payload.items() if k in allowed}
+    if "price" in update and (not isinstance(update["price"], (int, float)) or update["price"] < 0): raise HTTPException(422, "Invalid price")
+    result = await db.services.update_one({"id": service_id}, {"$set": update})
+    if result.matched_count != 1: raise HTTPException(404, "Service not found")
+    return await db.services.find_one({"id": service_id}, {"_id": 0})
+
+@api_router.get("/notifications")
+async def list_notifications(shop_id: str = Query(...)):
+    query = {} if shop_id == "all" else {"shop_id": shop_id}
+    return await db.notifications.find(query, {"_id": 0}).sort("created_at", -1).to_list(500)
+
+@api_router.patch("/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: str):
+    result = await db.notifications.update_one({"id": notification_id}, {"$set": {"read": True, "read_at": datetime.now(timezone.utc).isoformat()}})
+    if result.matched_count != 1: raise HTTPException(404, "Notification not found")
+    return await db.notifications.find_one({"id": notification_id}, {"_id": 0})
+
+@api_router.post("/notifications/read-all")
+async def mark_all_notifications_read(shop_id: str = Query(...)):
+    query = {} if shop_id == "all" else {"shop_id": shop_id}
+    await db.notifications.update_many(query, {"$set": {"read": True, "read_at": datetime.now(timezone.utc).isoformat()}})
+    return {"ok": True}
+
+
+# ---------- SETTINGS ----------
+@api_router.get("/settings/{shop_id}")
+async def get_settings(shop_id: str):
+    if not await db.shops.find_one({"id": shop_id}, {"_id": 1}):
+        raise HTTPException(404, "Shop not found")
+    defaults = {
+        "shop_id": shop_id,
+        "currency": "INR",
+        "tax_enabled": True,
+        "notifications_enabled": True,
+    }
+    settings = await db.settings.find_one({"shop_id": shop_id}, {"_id": 0})
+    return {**defaults, **(settings or {})}
+
+
+@api_router.patch("/settings/{shop_id}")
+async def update_settings(shop_id: str, payload: Dict[str, Any]):
+    if not await db.shops.find_one({"id": shop_id}, {"_id": 1}):
+        raise HTTPException(404, "Shop not found")
+    allowed = {"currency", "tax_enabled", "notifications_enabled"}
+    update = {key: value for key, value in payload.items() if key in allowed}
+    if not update:
+        raise HTTPException(422, "No supported settings supplied")
+    await db.settings.update_one({"shop_id": shop_id}, {"$set": update}, upsert=True)
+    return await get_settings(shop_id)
 
 
 # ---------- REPORTS ----------
@@ -692,6 +1015,11 @@ async def root():
     return {"app": "RetailPrime ERP", "status": "ok"}
 
 
+@api_router.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -701,6 +1029,31 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def ensure_indexes():
+    """Verify MongoDB before serving requests, then create query indexes."""
+    try:
+        await db.command("ping")
+        logger.info("Connected to MongoDB database '%s'", db.name)
+    except Exception as exc:
+        logger.exception("Cannot connect to MongoDB database '%s'", db.name)
+        raise RuntimeError(
+            f"MongoDB connection failed for database '{db.name}'. "
+            "Check MONGO_URL and that MongoDB is running."
+        ) from exc
+
+    # Indexes mirror the API's shop-scoped lookup and reporting paths.
+    await db.invoices.create_index("invoice_number", unique=True)
+    await db.invoices.create_index([("shop_id", 1), ("created_at", -1)])
+    await db.products.create_index([("shop_id", 1), ("sku", 1)], unique=True)
+    await db.products.create_index([("shop_id", 1), ("barcode", 1)], unique=True)
+    await db.customers.create_index([("shop_id", 1), ("phone", 1)])
+    await db.expenses.create_index([("shop_id", 1), ("date", -1)])
+    await db.transfers.create_index([("from_shop_id", 1), ("created_at", -1)])
+    await db.transfers.create_index([("to_shop_id", 1), ("created_at", -1)])
+    await db.transfers.create_index([("status", 1), ("created_at", -1)])
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

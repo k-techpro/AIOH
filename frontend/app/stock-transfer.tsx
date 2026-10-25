@@ -1,5 +1,6 @@
+import { BrandLoader } from "@/src/components/Brand";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, FlatList, ActivityIndicator, TextInput, Modal, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, ScrollView, Pressable, FlatList, TextInput, Modal, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -74,7 +75,7 @@ export default function StockTransfer() {
         </Pressable>
       </View>
 
-      {loading ? <ActivityIndicator style={{ marginTop: 20 }} color={colors.brand} /> : (
+      {loading ? <BrandLoader style={{ marginTop: 20 }} color={colors.brand} /> : (
         <FlatList
           data={transfers}
           keyExtractor={(t) => t.id}

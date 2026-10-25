@@ -7,6 +7,12 @@ type CartItem = {
   quantity: number;
   gst: number;
   cost_price: number;
+  // Web-parity fields: applied discount % (starts at 0, capped by the product's Maximum Allowed Discount)
+  discount?: number;
+  max_discount_type?: string;
+  max_discount_value?: number;
+  stock?: number;
+  sku?: string;
 };
 
 type State = {
@@ -16,6 +22,7 @@ type State = {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
   updateQty: (product_id: string, qty: number) => void;
+  setDiscount: (product_id: string, discount: number) => void;
   removeFromCart: (product_id: string) => void;
   clearCart: () => void;
   selectedCustomer: any | null;
@@ -32,7 +39,7 @@ export const useAppStore = create<State>((set, get) => ({
     if (existing) {
       set({
         cart: get().cart.map((c) =>
-          c.product_id === item.product_id ? { ...c, quantity: c.quantity + 1 } : c
+          c.product_id === item.product_id ? { ...c, quantity: Math.min(c.quantity + 1, c.stock ?? Infinity) } : c
         ),
       });
     } else {
@@ -43,9 +50,10 @@ export const useAppStore = create<State>((set, get) => ({
     if (qty <= 0) {
       set({ cart: get().cart.filter((c) => c.product_id !== product_id) });
     } else {
-      set({ cart: get().cart.map((c) => (c.product_id === product_id ? { ...c, quantity: qty } : c)) });
+      set({ cart: get().cart.map((c) => (c.product_id === product_id ? { ...c, quantity: Math.min(qty, c.stock ?? Infinity) } : c)) });
     }
   },
+  setDiscount: (product_id, discount) => set({ cart: get().cart.map((c) => (c.product_id === product_id ? { ...c, discount } : c)) }),
   removeFromCart: (product_id) => set({ cart: get().cart.filter((c) => c.product_id !== product_id) }),
   clearCart: () => set({ cart: [], selectedCustomer: null }),
   selectedCustomer: null,

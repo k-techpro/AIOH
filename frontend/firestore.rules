@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Prototype: all ERP records are isolated by Firebase Auth UID. The client
+    // never writes outside its own businessData hierarchy.
+    match /users/{userId}/businessData/{collection}/records/{documentId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

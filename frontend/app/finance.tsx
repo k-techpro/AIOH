@@ -1,5 +1,6 @@
+import { BrandLoader } from "@/src/components/Brand";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, ActivityIndicator, Dimensions } from "react-native";
+import { View, Text, ScrollView, Pressable, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,7 +25,7 @@ export default function Finance() {
     });
   }, [shopId]);
 
-  if (!data) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.surface }}><ActivityIndicator style={{ marginTop: 40 }} color={colors.brand} /></SafeAreaView>;
+  if (!data) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.surface }}><BrandLoader style={{ marginTop: 40 }} color={colors.brand} /></SafeAreaView>;
 
   const k = data.kpis;
   const totalRev = data.trend_30.reduce((a: number, b: any) => a + b.revenue, 0);

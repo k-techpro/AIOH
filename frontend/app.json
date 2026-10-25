@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
-    "version": "1.0.0",
+    "name": "RetailPrime",
+    "slug": "retailprime",
+    "version": "1.1.1",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "frontend",
+    "icon": "./assets/images/retailprime-logo.png",
+    "scheme": "retailprime",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -13,9 +13,10 @@
       "bundleIdentifier": "com.emergent.inventorypro.qno66u"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000000"
+        "foregroundImage": "./assets/images/retailprime-logo.png",
+        "backgroundColor": "#05091c"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.emergent.inventorypro.qno66u"
@@ -23,19 +24,34 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/retailprime-logo.png"
     },
     "plugins": [
       "expo-router",
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow RetailPrime to scan product barcodes and capture repair-condition photos."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Allow RetailPrime to capture repair-condition photos."
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-image.png",
-          "imageWidth": 200,
+          "image": "./assets/images/retailprime-logo.png",
+          "imageWidth": 300,
           "resizeMode": "contain",
-          "backgroundColor": "#000000"
+          "backgroundColor": "#05091c"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true

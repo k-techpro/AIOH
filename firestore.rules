@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Prototype: all private ERP data is nested below the authenticated owner.
+    match /users/{userId}/businessData/{collection}/records/{documentId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

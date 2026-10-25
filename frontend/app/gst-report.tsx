@@ -1,5 +1,6 @@
+import { BrandLoader } from "@/src/components/Brand";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,7 +16,7 @@ export default function GstReport() {
   const { shopId } = useAppStore();
   const [g, setG] = useState<any>(null);
   useEffect(() => { if (shopId) api.gstReport(shopId).then(setG); }, [shopId]);
-  if (!g) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.surface }}><ActivityIndicator style={{ marginTop: 40 }} color={colors.brand} /></SafeAreaView>;
+  if (!g) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.surface }}><BrandLoader style={{ marginTop: 40 }} color={colors.brand} /></SafeAreaView>;
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.surface }}>
       <View style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
